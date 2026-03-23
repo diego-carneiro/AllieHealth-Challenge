@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev:apps",
+    "bootstrap-db": "npm run db:bootstrap -w apps/backend",
+    "dev": "npm run bootstrap-db && npm run dev:apps",
     "dev:apps": "concurrently \"npm run dev -w apps/backend\" \"npm run dev -w apps/frontend\"",
     "build": "npm run build -w packages/shared && npm run build -w apps/backend && npm run build -w apps/frontend"
   },
