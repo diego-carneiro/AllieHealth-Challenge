@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { db } from "../db/client";
+import { generateWeekSlots } from "../services/scheduler";
 
 const router = Router();
 
@@ -24,6 +25,24 @@ router.get("/", (_req, res) => {
     .all();
 
   res.json(schedule);
+});
+
+router.post("/generate", (req, res) => {
+  const { weekStart } = req.body as { weekStart?: string };
+
+  if (!weekStart) {
+    return res.status(400).json({
+      ok: false,
+      message: "weekStart is required in format YYYY-MM-DD"
+    });
+  }
+
+  const result = generateWeekSlots(weekStart);
+
+  return res.json({
+    ok: true,
+    ...result
+  });
 });
 
 export default router;
