@@ -32,7 +32,6 @@ function App() {
     <main className="app-shell">
       <header className="page-header">
         <div>
-          <p className="eyebrow">AllieHealth Challenge</p>
           <h1>Restaurant Scheduler</h1>
           <p className="subtitle">
             Weekly schedule view for restaurant staffing coverage.
