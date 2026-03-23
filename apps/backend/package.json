@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "db:init": "tsx src/db/init.ts"
+    "db:init": "tsx src/db/init.ts",
+    "db:reset": "rm -f data/app.db && tsx src/db/init.ts"
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
