@@ -25,6 +25,47 @@ function getDayOfWeek(dateString: string) {
   return dayNames[date.getUTCDay()];
 }
 
+function findAssignedSlotByEmployeeAndTime(
+  employeeName: string,
+  dayOfWeek: string,
+  shift: string
+) {
+  const rows = db
+    .prepare(
+      `
+      SELECT
+        ss.id,
+        ss.date,
+        ss.shift,
+        ss.role,
+        ss.required_skill,
+        ss.employee_id
+      FROM shift_slots ss
+      JOIN employees e ON e.id = ss.employee_id
+      WHERE LOWER(e.name) = LOWER(?)
+        AND ss.shift = ?
+        AND ss.status = 'assigned'
+      ORDER BY ss.date DESC, ss.id DESC
+      `
+    )
+    .all(employeeName, shift) as SlotRow[];
+
+  return rows.find((row) => getDayOfWeek(row.date) === dayOfWeek);
+}
+
+function findEmployeeByName(employeeName: string) {
+  return db
+    .prepare(
+      `
+      SELECT id, name, role
+      FROM employees
+      WHERE LOWER(name) = LOWER(?)
+      LIMIT 1
+      `
+    )
+    .get(employeeName) as { id: number; name: string; role: string } | undefined;
+}
+
 function findBestCandidateForSlot(slot: SlotRow, excludeEmployeeId?: number) {
   const dayOfWeek = getDayOfWeek(slot.date);
 
@@ -310,4 +351,53 @@ export function removeAndRefill(slotId: number) {
     message: "Assignment removed and slot refilled successfully.",
     employee: candidate
   };
+}
+
+export function removeAssignmentByEmployeeAndTime(
+  employeeName: string,
+  dayOfWeek: string,
+  shift: string
+) {
+  const slot = findAssignedSlotByEmployeeAndTime(employeeName, dayOfWeek, shift);
+
+  if (!slot) {
+    return { ok: false, message: "No matching assigned slot found for that employee, day and shift." };
+  }
+
+  return removeAssignment(slot.id);
+}
+
+export function removeAndRefillByEmployeeAndTime(
+  employeeName: string,
+  dayOfWeek: string,
+  shift: string
+) {
+  const slot = findAssignedSlotByEmployeeAndTime(employeeName, dayOfWeek, shift);
+
+  if (!slot) {
+    return { ok: false, message: "No matching assigned slot found for that employee, day and shift." };
+  }
+
+  return removeAndRefill(slot.id);
+}
+
+export function replaceAssignmentByEmployeeAndTime(
+  fromEmployeeName: string,
+  toEmployeeName: string,
+  dayOfWeek: string,
+  shift: string
+) {
+  const slot = findAssignedSlotByEmployeeAndTime(fromEmployeeName, dayOfWeek, shift);
+
+  if (!slot) {
+    return { ok: false, message: "No matching assigned slot found for the employee you want to replace." };
+  }
+
+  const newEmployee = findEmployeeByName(toEmployeeName);
+
+  if (!newEmployee) {
+    return { ok: false, message: "Replacement employee not found." };
+  }
+
+  return replaceAssignment(slot.id, newEmployee.id);
 }

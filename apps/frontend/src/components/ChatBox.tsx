@@ -45,12 +45,13 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
             <p>Try one of these commands:</p>
             <ul>
               <li><code>show schedule</code></li>
+              <li><code>show monday schedule</code></li>
               <li><code>show employees</code></li>
               <li><code>show rules</code></li>
               <li><code>fill this week</code></li>
-              <li><code>remove slot 81</code></li>
-              <li><code>refill slot 81</code></li>
-              <li><code>remove and refill slot 81</code></li>
+              <li><code>remove Ana Lima from monday morning</code></li>
+              <li><code>remove and refill Ana Lima from monday morning</code></li>
+              <li><code>replace Ana Lima with Bruno Costa on monday morning</code></li>
             </ul>
           </div>
         ) : (
