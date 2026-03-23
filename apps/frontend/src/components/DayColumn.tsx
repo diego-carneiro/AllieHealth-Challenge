@@ -30,30 +30,38 @@ export function DayColumn({ dayLabel, coverage, items }: DayColumnProps) {
       <div className="shift-group">
         <h3>Morning</h3>
         <div className="shift-list">
-          {morningItems.map((item) => (
-            <ShiftCard
-              key={item.id}
-              role={item.role}
-              requiredSkill={item.requiredSkill}
-              employeeName={item.employeeName}
-              status={item.status}
-            />
-          ))}
+          {morningItems.length > 0 ? (
+            morningItems.map((item) => (
+              <ShiftCard
+                key={item.id}
+                role={item.role}
+                requiredSkill={item.requiredSkill}
+                employeeName={item.employeeName}
+                status={item.status}
+              />
+            ))
+          ) : (
+            <div className="empty-shift-group">No morning slots</div>
+          )}
         </div>
       </div>
 
       <div className="shift-group">
         <h3>Evening</h3>
         <div className="shift-list">
-          {eveningItems.map((item) => (
-            <ShiftCard
-              key={item.id}
-              role={item.role}
-              requiredSkill={item.requiredSkill}
-              employeeName={item.employeeName}
-              status={item.status}
-            />
-          ))}
+          {eveningItems.length > 0 ? (
+            eveningItems.map((item) => (
+              <ShiftCard
+                key={item.id}
+                role={item.role}
+                requiredSkill={item.requiredSkill}
+                employeeName={item.employeeName}
+                status={item.status}
+              />
+            ))
+          ) : (
+            <div className="empty-shift-group">No evening slots</div>
+          )}
         </div>
       </div>
     </section>

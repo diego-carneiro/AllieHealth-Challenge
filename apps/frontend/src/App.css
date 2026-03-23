@@ -10,7 +10,10 @@
 
 body {
   margin: 0;
-  background: #f3f4f6;
+  background:
+    radial-gradient(circle at top left, rgba(219, 234, 254, 0.8), transparent 28%),
+    radial-gradient(circle at top right, rgba(237, 233, 254, 0.7), transparent 25%),
+    #f3f4f6;
 }
 
 #root {
@@ -42,7 +45,8 @@ body {
   padding: 18px;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
 }
 
@@ -126,6 +130,7 @@ body {
   border-radius: 12px;
   padding: 12px 14px;
   font-size: 0.95rem;
+  background: #ffffff;
 }
 
 .chat-form button {
@@ -171,11 +176,11 @@ body {
 
 .day-column {
   min-width: 220px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 16px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .day-column-header {
@@ -207,11 +212,27 @@ body {
   gap: 10px;
 }
 
-.shift-card {
-  border: 1px solid #e5e7eb;
+.empty-shift-group {
+  border: 1px dashed #d1d5db;
   border-radius: 12px;
   padding: 12px;
+  color: #6b7280;
   background: #f9fafb;
+  font-size: 0.9rem;
+}
+
+.shift-card {
+  border: 1px solid #e5e7eb;
+  border-left-width: 5px;
+  border-radius: 14px;
+  padding: 12px;
+  background: #f9fafb;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.shift-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
 }
 
 .shift-open {
@@ -219,11 +240,38 @@ body {
   background: #fff7ed;
 }
 
+.role-manager {
+  border-left-color: #7c3aed;
+}
+
+.role-cook {
+  border-left-color: #ea580c;
+}
+
+.role-waiter {
+  border-left-color: #2563eb;
+}
+
+.role-hostess {
+  border-left-color: #db2777;
+}
+
+.role-dishwasher {
+  border-left-color: #6b7280;
+}
+
 .shift-card-header {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 8px;
+}
+
+.shift-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .shift-card-body {
@@ -245,6 +293,24 @@ body {
   color: #6d28d9;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.status-assigned {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-open {
+  background: #ffedd5;
+  color: #9a3412;
 }
 
 .coverage-badge {
