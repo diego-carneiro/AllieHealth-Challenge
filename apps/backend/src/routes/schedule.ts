@@ -2,6 +2,12 @@ import { Router } from "express";
 import { db } from "../db/client";
 import { generateWeekSlots } from "../services/scheduler";
 import { autofillWeekSlots } from "../services/autofill";
+import {
+  removeAssignment,
+  refillOpenSlot,
+  replaceAssignment,
+  removeAndRefill
+} from "../services/swap";
 
 const router = Router();
 
@@ -62,6 +68,59 @@ router.post("/autofill", (req, res) => {
     ok: true,
     ...result
   });
+});
+
+router.post("/:slotId/remove", (req, res) => {
+  const slotId = Number(req.params.slotId);
+  const result = removeAssignment(slotId);
+
+  if (!result.ok) {
+    return res.status(400).json(result);
+  }
+
+  return res.json(result);
+});
+
+router.post("/:slotId/refill", (req, res) => {
+  const slotId = Number(req.params.slotId);
+  const result = refillOpenSlot(slotId);
+
+  if (!result.ok) {
+    return res.status(400).json(result);
+  }
+
+  return res.json(result);
+});
+
+router.post("/:slotId/remove-and-refill", (req, res) => {
+  const slotId = Number(req.params.slotId);
+  const result = removeAndRefill(slotId);
+
+  if (!result.ok) {
+    return res.status(400).json(result);
+  }
+
+  return res.json(result);
+});
+
+router.post("/:slotId/replace", (req, res) => {
+  const slotId = Number(req.params.slotId);
+  const { employeeId } = req.body as { employeeId?: number };
+
+  if (!employeeId) {
+    return res.status(400).json({
+      ok: false,
+      message: "employeeId is required."
+    });
+  }
+
+  const result = replaceAssignment(slotId, employeeId);
+
+  if (!result.ok) {
+    return res.status(400).json(result);
+  }
+
+  return res.json(result);
 });
 
 export default router;
