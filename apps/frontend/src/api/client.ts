@@ -9,6 +9,28 @@ export type ScheduleApiItem = {
   employee_name: string | null;
 };
 
+export type ChatApiResponse = {
+  ok: boolean;
+  message?: string;
+  command?: { type: string };
+  generateResult?: {
+    created: number;
+    skipped: boolean;
+    message: string;
+  };
+  autofillResult?: {
+    filled: number;
+    remainingOpen: number;
+    message: string;
+  };
+  data?: unknown[];
+  employee?: {
+    id: number;
+    name: string;
+  };
+  received?: string;
+};
+
 const API_BASE_URL = "http://localhost:3000";
 
 export async function fetchSchedule(): Promise<ScheduleApiItem[]> {
@@ -19,4 +41,22 @@ export async function fetchSchedule(): Promise<ScheduleApiItem[]> {
   }
 
   return response.json();
+}
+
+export async function sendChatMessage(message: string): Promise<ChatApiResponse> {
+  const response = await fetch(`${API_BASE_URL}/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message ?? "Failed to send chat message.");
+  }
+
+  return data;
 }

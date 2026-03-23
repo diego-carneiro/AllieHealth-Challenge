@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { ScheduleBoard } from "./components/ScheduleBoard";
-import { fetchSchedule, type ScheduleApiItem } from "./api/client";
+import { ChatBox, type ChatMessage } from "./components/ChatBox";
+import {
+  fetchSchedule,
+  sendChatMessage,
+  type ChatApiResponse,
+  type ScheduleApiItem
+} from "./api/client";
 
 type BoardItem = {
   id: number;
@@ -29,28 +35,94 @@ function formatDayFromDate(dateString: string) {
   return dayNames[date.getUTCDay()];
 }
 
+function summarizeChatResponse(response: ChatApiResponse) {
+  if (response.command?.type === "fill_week") {
+    return [
+      response.message,
+      response.generateResult
+        ? `Generated: ${response.generateResult.created} slots.`
+        : null,
+      response.autofillResult
+        ? `Filled: ${response.autofillResult.filled}. Remaining open: ${response.autofillResult.remainingOpen}.`
+        : null
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  if (response.command?.type === "show_schedule") {
+    return `Loaded ${response.data?.length ?? 0} schedule items.`;
+  }
+
+  if (response.command?.type === "show_employees") {
+    return `Loaded ${response.data?.length ?? 0} employees.`;
+  }
+
+  if (response.command?.type === "show_rules") {
+    return `Loaded ${response.data?.length ?? 0} schedule rules.`;
+  }
+
+  if (response.employee?.name) {
+    return `${response.message} Employee: ${response.employee.name}.`;
+  }
+
+  return response.message ?? "Command completed.";
+}
+
 function App() {
   const [schedule, setSchedule] = useState<ScheduleApiItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  async function loadSchedule() {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await fetchSchedule();
+      setSchedule(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadSchedule() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const data = await fetchSchedule();
-        setSchedule(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unexpected error.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     loadSchedule();
   }, []);
+
+  async function handleSendMessage(message: string) {
+    const userMessage: ChatMessage = {
+      id: Date.now(),
+      role: "user",
+      text: message
+    };
+
+    setChatHistory((current) => [...current, userMessage]);
+
+    try {
+      const response = await sendChatMessage(message);
+
+      const assistantMessage: ChatMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: summarizeChatResponse(response)
+      };
+
+      setChatHistory((current) => [...current, assistantMessage]);
+      await loadSchedule();
+    } catch (err) {
+      const assistantMessage: ChatMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: err instanceof Error ? err.message : "Unexpected error."
+      };
+
+      setChatHistory((current) => [...current, assistantMessage]);
+    }
+  }
 
   const boardItems = useMemo<BoardItem[]>(() => {
     return schedule.map((item) => ({
@@ -74,6 +146,8 @@ function App() {
           </p>
         </div>
       </header>
+
+      <ChatBox history={chatHistory} onSendMessage={handleSendMessage} />
 
       {loading ? <p className="info-banner">Loading schedule...</p> : null}
       {error ? <p className="error-banner">{error}</p> : null}
