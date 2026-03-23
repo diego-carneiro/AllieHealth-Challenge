@@ -1,121 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import "./App.css";
+import { ScheduleBoard } from "./components/ScheduleBoard";
+
+const mockSchedule = [
+  { id: 1, day: "Monday", shift: "morning", role: "manager", requiredSkill: "opening", employeeName: "Ana Lima", status: "assigned" },
+  { id: 2, day: "Monday", shift: "morning", role: "cook", requiredSkill: null, employeeName: "Diego Rocha", status: "assigned" },
+  { id: 3, day: "Monday", shift: "morning", role: "waiter", requiredSkill: null, employeeName: null, status: "open" },
+  { id: 4, day: "Monday", shift: "evening", role: "manager", requiredSkill: "closing", employeeName: "Bruno Costa", status: "assigned" },
+  { id: 5, day: "Monday", shift: "evening", role: "waiter", requiredSkill: null, employeeName: "Sofia Araujo", status: "assigned" },
+
+  { id: 6, day: "Tuesday", shift: "morning", role: "hostess", requiredSkill: "cashier", employeeName: "Talita Pires", status: "assigned" },
+  { id: 7, day: "Tuesday", shift: "evening", role: "dishwasher", requiredSkill: null, employeeName: null, status: "open" },
+
+  { id: 8, day: "Wednesday", shift: "morning", role: "cook", requiredSkill: null, employeeName: "Fernanda Alves", status: "assigned" },
+  { id: 9, day: "Wednesday", shift: "evening", role: "waiter", requiredSkill: "wine-service", employeeName: "Natalia Barros", status: "assigned" },
+
+  { id: 10, day: "Thursday", shift: "morning", role: "manager", requiredSkill: "opening", employeeName: null, status: "open" },
+  { id: 11, day: "Thursday", shift: "evening", role: "cook", requiredSkill: null, employeeName: "Gabriel Souza", status: "assigned" },
+
+  { id: 12, day: "Friday", shift: "morning", role: "waiter", requiredSkill: null, employeeName: "Rafael Moura", status: "assigned" },
+  { id: 13, day: "Friday", shift: "evening", role: "dishwasher", requiredSkill: null, employeeName: null, status: "open" },
+
+  { id: 14, day: "Saturday", shift: "morning", role: "hostess", requiredSkill: "cashier", employeeName: "Vanessa Duarte", status: "assigned" },
+  { id: 15, day: "Saturday", shift: "evening", role: "waiter", requiredSkill: null, employeeName: null, status: "open" },
+
+  { id: 16, day: "Sunday", shift: "morning", role: "cook", requiredSkill: null, employeeName: "Helena Martins", status: "assigned" },
+  { id: 17, day: "Sunday", shift: "evening", role: "manager", requiredSkill: "closing", employeeName: null, status: "open" }
+] as const;
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <main className="app-shell">
+      <header className="page-header">
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+          <p className="eyebrow">AllieHealth Challenge</p>
+          <h1>Restaurant Scheduler</h1>
+          <p className="subtitle">
+            Weekly schedule view for restaurant staffing coverage.
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <ScheduleBoard items={[...mockSchedule]} />
+    </main>
+  );
 }
 
-export default App
+export default App;
