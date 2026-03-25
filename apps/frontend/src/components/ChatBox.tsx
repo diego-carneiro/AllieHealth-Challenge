@@ -1,4 +1,5 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 
 export type ChatMessage = {
   id: number;
@@ -34,24 +35,40 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
     <section className="chat-panel">
       <div className="chat-panel-header">
         <div>
-          <h2>Chat Commands</h2>
-          <p>Control the schedule with text commands instead of buttons.</p>
+          <h2>Schedule Assistant</h2>
+          <p>Ask about schedules, employees, rules, or staffing changes.</p>
         </div>
       </div>
 
       <div className="chat-history">
         {history.length === 0 ? (
           <div className="chat-empty">
-            <p>Try one of these commands:</p>
+            <p>Try something like:</p>
             <ul>
-              <li><code>show schedule</code></li>
-              <li><code>show monday schedule</code></li>
-              <li><code>show employees</code></li>
-              <li><code>show rules</code></li>
-              <li><code>fill this week</code></li>
-              <li><code>remove Ana Lima from monday morning</code></li>
-              <li><code>remove and refill Ana Lima from monday morning</code></li>
-              <li><code>replace Ana Lima with Bruno Costa on monday morning</code></li>
+              <li>
+                <code>Show me this week&apos;s schedule</code>
+              </li>
+              <li>
+                <code>Who is working on Monday morning?</code>
+              </li>
+              <li>
+                <code>Show all employees</code>
+              </li>
+              <li>
+                <code>What are the scheduling rules?</code>
+              </li>
+              <li>
+                <code>Fill this week</code>
+              </li>
+              <li>
+                <code>Remove Ana Lima from Monday morning</code>
+              </li>
+              <li>
+                <code>Remove and refill Bruno Costa from Friday evening</code>
+              </li>
+              <li>
+                <code>Replace Ana Lima with Bruno Costa on Monday morning</code>
+              </li>
             </ul>
           </div>
         ) : (
@@ -74,7 +91,7 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
           type="text"
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder="Type a command..."
+          placeholder="Ask about the schedule..."
           disabled={submitting}
         />
         <button type="submit" disabled={submitting || !input.trim()}>

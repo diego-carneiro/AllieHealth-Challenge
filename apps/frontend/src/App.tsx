@@ -6,7 +6,7 @@ import {
   fetchSchedule,
   sendChatMessage,
   type ChatApiResponse,
-  type ScheduleApiItem
+  type ScheduleApiItem,
 } from "./api/client";
 
 type BoardItem = {
@@ -26,7 +26,7 @@ const dayNames = [
   "Wednesday",
   "Thursday",
   "Friday",
-  "Saturday"
+  "Saturday",
 ];
 
 function formatDayFromDate(dateString: string) {
@@ -36,37 +36,7 @@ function formatDayFromDate(dateString: string) {
 }
 
 function summarizeChatResponse(response: ChatApiResponse) {
-  if (response.command?.type === "fill_week") {
-    return [
-      response.message,
-      response.generateResult
-        ? `Generated: ${response.generateResult.created} slots.`
-        : null,
-      response.autofillResult
-        ? `Filled: ${response.autofillResult.filled}. Remaining open: ${response.autofillResult.remainingOpen}.`
-        : null
-    ]
-      .filter(Boolean)
-      .join(" ");
-  }
-
-  if (response.command?.type === "show_schedule") {
-    return `Loaded ${response.data?.length ?? 0} schedule items.`;
-  }
-
-  if (response.command?.type === "show_employees") {
-    return `Loaded ${response.data?.length ?? 0} employees.`;
-  }
-
-  if (response.command?.type === "show_rules") {
-    return `Loaded ${response.data?.length ?? 0} schedule rules.`;
-  }
-
-  if (response.employee?.name) {
-    return `${response.message} Employee: ${response.employee.name}.`;
-  }
-
-  return response.message ?? "Command completed.";
+  return response.message ?? "Message received.";
 }
 
 function App() {
@@ -97,7 +67,7 @@ function App() {
     const userMessage: ChatMessage = {
       id: Date.now(),
       role: "user",
-      text: message
+      text: message,
     };
 
     setChatHistory((current) => [...current, userMessage]);
@@ -108,7 +78,7 @@ function App() {
       const assistantMessage: ChatMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        text: summarizeChatResponse(response)
+        text: summarizeChatResponse(response),
       };
 
       setChatHistory((current) => [...current, assistantMessage]);
@@ -117,7 +87,7 @@ function App() {
       const assistantMessage: ChatMessage = {
         id: Date.now() + 1,
         role: "assistant",
-        text: err instanceof Error ? err.message : "Unexpected error."
+        text: err instanceof Error ? err.message : "Unexpected error.",
       };
 
       setChatHistory((current) => [...current, assistantMessage]);
@@ -132,7 +102,7 @@ function App() {
       role: item.role,
       requiredSkill: item.required_skill,
       employeeName: item.employee_name,
-      status: item.status
+      status: item.status,
     }));
   }, [schedule]);
 
@@ -154,7 +124,8 @@ function App() {
 
       {!loading && !error && boardItems.length === 0 ? (
         <p className="info-banner">
-          No schedule slots found yet. Generate and autofill the week from the backend.
+          No schedule slots found yet. Generate and autofill the week from the
+          backend.
         </p>
       ) : null}
 
