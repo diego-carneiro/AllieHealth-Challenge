@@ -82,7 +82,7 @@ function App() {
       };
 
       setChatHistory((current) => [...current, assistantMessage]);
-      await loadSchedule();
+      if (response.scheduleUpdated) await loadSchedule();
     } catch (err) {
       const assistantMessage: ChatMessage = {
         id: Date.now() + 1,
@@ -109,6 +109,7 @@ function App() {
   return (
     <main className="app-shell">
       <header className="page-header">
+        <div className="page-header-icon">🍽️</div>
         <div>
           <h1>Restaurant Scheduler</h1>
           <p className="subtitle">

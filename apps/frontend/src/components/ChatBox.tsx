@@ -1,5 +1,4 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export type ChatMessage = {
   id: number;
@@ -12,11 +11,25 @@ type ChatBoxProps = {
   onSendMessage: (message: string) => Promise<void>;
 };
 
+const examplePrompts = [
+  "Fill this week",
+  "Who is working Monday morning?",
+  "Show all employees",
+  "What are the scheduling rules?",
+  "Remove Ana Lima from Monday morning",
+  "Replace Ana with Bruno on Friday evening",
+];
+
 export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
   const [input, setInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [history, submitting]);
+
+  async function handleSubmit(event: { preventDefault(): void }) {
     event.preventDefault();
 
     const message = input.trim();
@@ -24,8 +37,8 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
 
     try {
       setSubmitting(true);
-      await onSendMessage(message);
       setInput("");
+      await onSendMessage(message);
     } finally {
       setSubmitting(false);
     }
@@ -34,6 +47,7 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
   return (
     <section className="chat-panel">
       <div className="chat-panel-header">
+        <div className="chat-panel-icon">✦</div>
         <div>
           <h2>Schedule Assistant</h2>
           <p>Ask about schedules, employees, rules, or staffing changes.</p>
@@ -43,33 +57,19 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
       <div className="chat-history">
         {history.length === 0 ? (
           <div className="chat-empty">
-            <p>Try something like:</p>
-            <ul>
-              <li>
-                <code>Show me this week&apos;s schedule</code>
-              </li>
-              <li>
-                <code>Who is working on Monday morning?</code>
-              </li>
-              <li>
-                <code>Show all employees</code>
-              </li>
-              <li>
-                <code>What are the scheduling rules?</code>
-              </li>
-              <li>
-                <code>Fill this week</code>
-              </li>
-              <li>
-                <code>Remove Ana Lima from Monday morning</code>
-              </li>
-              <li>
-                <code>Remove and refill Bruno Costa from Friday evening</code>
-              </li>
-              <li>
-                <code>Replace Ana Lima with Bruno Costa on Monday morning</code>
-              </li>
-            </ul>
+            <p>Try asking:</p>
+            <div className="chat-prompts">
+              {examplePrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  className="chat-prompt-chip"
+                  onClick={() => setInput(prompt)}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           history.map((message) => (
@@ -84,6 +84,19 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
             </div>
           ))
         )}
+
+        {submitting && (
+          <div className="chat-message chat-assistant">
+            <div className="chat-role">Assistant</div>
+            <div className="chat-typing">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        )}
+
+        <div ref={bottomRef} />
       </div>
 
       <form className="chat-form" onSubmit={handleSubmit}>
@@ -95,7 +108,7 @@ export function ChatBox({ history, onSendMessage }: ChatBoxProps) {
           disabled={submitting}
         />
         <button type="submit" disabled={submitting || !input.trim()}>
-          {submitting ? "Sending..." : "Send"}
+          {submitting ? "Sending…" : "Send"}
         </button>
       </form>
     </section>

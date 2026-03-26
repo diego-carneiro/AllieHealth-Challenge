@@ -12,7 +12,7 @@ export type ScheduleApiItem = {
 export type ChatApiResponse = {
   ok: boolean;
   message?: string;
-  [key: string]: unknown;
+  scheduleUpdated?: boolean;
 };
 
 const API_BASE_URL = "http://localhost:3000";

@@ -28,7 +28,10 @@ export function DayColumn({ dayLabel, coverage, items }: DayColumnProps) {
       </div>
 
       <div className="shift-group">
-        <h3>Morning</h3>
+        <div className="shift-group-header">
+          <span className="shift-group-icon">☀️</span>
+          <h3>Morning</h3>
+        </div>
         <div className="shift-list">
           {morningItems.length > 0 ? (
             morningItems.map((item) => (
@@ -47,7 +50,10 @@ export function DayColumn({ dayLabel, coverage, items }: DayColumnProps) {
       </div>
 
       <div className="shift-group">
-        <h3>Evening</h3>
+        <div className="shift-group-header">
+          <span className="shift-group-icon">🌙</span>
+          <h3>Evening</h3>
+        </div>
         <div className="shift-list">
           {eveningItems.length > 0 ? (
             eveningItems.map((item) => (
